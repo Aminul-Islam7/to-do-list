@@ -7,6 +7,24 @@
   $result = mysqli_query($conn, $sql);
   $tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
+
+  
+  // Update task
+  if (isset($_POST['update-task'])) {
+    $taskId = $_POST['task-id'];
+    $update = $_POST['body'];
+
+    $sql = "UPDATE tasks SET `body` = '$update' WHERE id = $taskId";
+
+    if (mysqli_query($conn, $sql)) {
+      // Success
+      header('Location: index.php');
+    }
+    else {
+      // Error
+      echo 'Error ' . mysqli_error($conn);
+    }
+  }
   
 
   // Complete task
@@ -33,6 +51,7 @@
       echo 'Error ' . mysqli_error($conn);
     }
   }
+  
   
 
   // Delete task
@@ -99,11 +118,14 @@
       
       <form class="task-form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="POST">
 
-        <button class="completetask-button <?php echo $task['complete'] ? 'complete' : null; ?>" type="submit" value="" name="complete-task"><i class='fas fa-check'></i></button>
 
         <input class="updatetask-textbox <?php echo $task['complete'] ? 'strikethrough' : null ?>" type="text" placeholder="<?php echo $task['body'] ?>" name="body" value="<?php echo $task['body']; ?>">
 
         <input style="display: none;" type="text" name="task-id" value="<?php echo $task['id']; ?>">
+
+        <button style="display: none;" class="updatetask-button" type="submit" value="" name="update-task"><i class="fas fa-trash"></i></i></button>
+        
+        <button class="completetask-button <?php echo $task['complete'] ? 'complete' : null; ?>" type="submit" value="" name="complete-task"><i class='fas fa-check'></i></button>
 
         <button class="deletetask-button" type="submit" value="" name="delete-task"><i class="fas fa-trash"></i></i></button>
 
